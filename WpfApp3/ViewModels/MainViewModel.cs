@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -18,7 +19,22 @@ namespace WpfApp3.ViewModels
 
         public MainViewModel()
         {
+            SelectICommand = new RelayCommand((e) =>
+            {
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "Image Files(*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF|All files (*.*)|*.*";
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    ImagePath = openFileDialog.FileName;
 
+                }
+            });
+            SendCommand = new RelayCommand((e) =>
+            {
+                SendClickChecker = true;
+                Send();
+            });
+            
         }
 
         public void Send()
@@ -41,8 +57,9 @@ namespace WpfApp3.ViewModels
                             if (ImagePath != "")
                             {
 
-                            var bytes = Encoding.UTF8.GetBytes(ImagePath);
-                            socket.Send(bytes);
+                                var bytes = Encoding.UTF8.GetBytes(ImagePath);
+                                socket.Send(bytes);
+                                SendClickChecker = false;
                             }
                         }
                     }

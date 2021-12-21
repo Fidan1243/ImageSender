@@ -23,18 +23,14 @@ namespace WpfApp1.ViewModels
         public MainViewModel()
         {
             AllPhotos = new ObservableCollection<PhotoUser>();
-            var rc = Task.Run(() =>
-            {
-                Reciever();
-            });
-            Task.WaitAll(rc);
+            Reciever();
         }
 
 
         public void Reciever()
         {
             var ipAddress = IPAddress.Parse("10.1.18.52");
-            var port = 27001;
+            var port = 27002;
             using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
             {
                 var ep = new IPEndPoint(ipAddress, port);
