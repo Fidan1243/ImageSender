@@ -5,7 +5,9 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using WpfApp1.Models;
 
 namespace WpfApp1.ViewModels
@@ -20,10 +22,12 @@ namespace WpfApp1.ViewModels
             set { allPhotos = value;OnPropertyChanged(); }
         }
 
+        public List<PhotoUser> Users { get; set; }
         public MainViewModel()
         {
+            Task.Run(() => { Reciever(); });
+            Users = new List<PhotoUser>();
             AllPhotos = new ObservableCollection<PhotoUser>();
-            Reciever();
         }
 
 
@@ -46,7 +50,7 @@ namespace WpfApp1.ViewModels
                     Task.Run(() =>
                     {
 
-                        Console.WriteLine($"{client.RemoteEndPoint}  connected  . . . ");
+                        MessageBox.Show($"{client.RemoteEndPoint}  connected  . . . ");
                         var length = 0;
                         var bytes = new byte[1024];
                         
@@ -54,11 +58,12 @@ namespace WpfApp1.ViewModels
                         {
                             length = client.Receive(bytes);
                             var msg = Encoding.UTF8.GetString(bytes, 0, length);
-                            AllPhotos.Add(new PhotoUser
+                            Users.Add(new PhotoUser
                             {
                                 UserName = client.RemoteEndPoint.ToString(),
                                 ImagePath = msg
                             });
+                            AllPhotos = new ObservableCollection<PhotoUser>(Users);
                             if (msg == "ok")
                             {
                                 client.Shutdown(SocketShutdown.Both);

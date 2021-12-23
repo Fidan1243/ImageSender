@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using WpfApp3.Commands;
 
 namespace WpfApp3.ViewModels
@@ -19,6 +20,20 @@ namespace WpfApp3.ViewModels
 
         public MainViewModel()
         {
+            var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            var ipAddress = IPAddress.Parse("10.1.18.52");
+            var port = 27002;
+            var ep = new IPEndPoint(ipAddress, port);
+            try
+            {
+                socket.Connect(ep);
+                MessageBox.Show("Connected to the server . . .");
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
             SelectICommand = new RelayCommand((e) =>
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -31,49 +46,16 @@ namespace WpfApp3.ViewModels
             });
             SendCommand = new RelayCommand((e) =>
             {
-                SendClickChecker = true;
-                Send();
-            });
-            
-        }
-
-        public void Send()
-        {
-            var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            var ipAddress = IPAddress.Parse("10.1.18.52");
-            var port = 27001;
-            var ep = new IPEndPoint(ipAddress, port);
-
-            try
-            {
-                socket.Connect(ep);
                 if (socket.Connected)
                 {
-                    Console.WriteLine("Connected to the server . . .");
-                    while (true)
-                    {
-                        if (SendClickChecker)
-                        {
-                            if (ImagePath != "")
-                            {
 
-                                var bytes = Encoding.UTF8.GetBytes(ImagePath);
-                                socket.Send(bytes);
-                                SendClickChecker = false;
-                            }
-                        }
-                    }
+                    var msg = ImagePath;
+                    var bytes = Encoding.UTF8.GetBytes(msg);
+                    socket.Send(bytes);
+                    MessageBox.Show("The Image was sent to the server");
                 }
-                else
-                {
-                    Console.WriteLine("Can not connect to the server . . .");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Can not connect to the server . . .");
-                Console.WriteLine(ex.Message);
-            }
+            });
+
         }
     }
 }

@@ -5,19 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
-        Title="MainWindow1" Height="450" Width="500">
+        Title="MainWindow1" Height="650" Width="550">
     <Grid>
         <ListView Background="CornflowerBlue" ItemsSource="{Binding AllPhotos,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="User" Width="240">
+                    <GridViewColumn Header="User" Width="250">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Padding="5,0" Text="{Binding UserName}" ></TextBlock>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="Photo" Width="240">
+                    <GridViewColumn Header="Photo" Width="270">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <Image Source="{Binding ImagePath}"></Image>
