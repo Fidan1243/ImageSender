@@ -87,8 +87,8 @@ namespace WpfApp1.ViewModels
             ImageConverter ic = new ImageConverter();
             Image img = (Image)ic.ConvertFrom(buffer);
             Bitmap bitmap1 = new Bitmap(img);
-            bitmap1.Save($@"C:\Users\Documents\source\repos\TeamViewer\TeamViewer\bin\Debug\Images\image{counter}.png", ImageFormat.Jpeg);
-            var imagepath = $@"C:\Users\Documents\source\repos\TeamViewer\TeamViewer\bin\Debug\Images\image{counter}.png";
+            bitmap1.Save($@"C:\Users\Iman_vn85\source\repos\WpfApp3\WpfApp1\bin\Debug\Images\image{counter}.png");
+            var imagepath = $@"C:\Users\Iman_vn85\source\repos\WpfApp3\WpfApp1\bin\Debug\Images\image{counter}.png";
             return imagepath;
         }
     }
