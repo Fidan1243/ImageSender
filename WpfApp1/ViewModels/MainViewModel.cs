@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -43,6 +45,7 @@ namespace WpfApp1.ViewModels
                 socket.Listen(10);
                 Console.WriteLine($"Listening on {socket.LocalEndPoint}");
 
+                int i = 0;
 
                 while (true)
                 {
@@ -56,8 +59,9 @@ namespace WpfApp1.ViewModels
                         
                         do
                         {
+                            i++;
                             length = client.Receive(bytes);
-                            var msg = Encoding.UTF8.GetString(bytes, 0, length);
+                            var msg = GetImagePath(bytes, i);
                             Users.Add(new PhotoUser
                             {
                                 UserName = client.RemoteEndPoint.ToString(),
@@ -77,6 +81,15 @@ namespace WpfApp1.ViewModels
                 }
 
             }
+        }
+        public string GetImagePath(byte[] buffer, int counter)
+        {
+            ImageConverter ic = new ImageConverter();
+            Image img = (Image)ic.ConvertFrom(buffer);
+            Bitmap bitmap1 = new Bitmap(img);
+            bitmap1.Save($@"C:\Users\Documents\source\repos\TeamViewer\TeamViewer\bin\Debug\Images\image{counter}.png", ImageFormat.Jpeg);
+            var imagepath = $@"C:\Users\Documents\source\repos\TeamViewer\TeamViewer\bin\Debug\Images\image{counter}.png";
+            return imagepath;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -24,16 +25,6 @@ namespace WpfApp3.ViewModels
             var ipAddress = IPAddress.Parse("10.1.18.52");
             var port = 27002;
             var ep = new IPEndPoint(ipAddress, port);
-            try
-            {
-                socket.Connect(ep);
-                MessageBox.Show("Connected to the server . . .");
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
             SelectICommand = new RelayCommand((e) =>
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -41,21 +32,33 @@ namespace WpfApp3.ViewModels
                 if (openFileDialog.ShowDialog() == true)
                 {
                     ImagePath = openFileDialog.FileName;
-
                 }
             });
             SendCommand = new RelayCommand((e) =>
             {
-                if (socket.Connected)
+                try
                 {
+                    socket.Connect(ep);
+                    MessageBox.Show("Connected to the server . . .");
 
-                    var msg = ImagePath;
-                    var bytes = Encoding.UTF8.GetBytes(msg);
-                    socket.Send(bytes);
-                    MessageBox.Show("The Image was sent to the server");
+                    if (socket.Connected)
+                    {
+                        socket.Send(GetBytesOfImage(ImagePath));
+                        MessageBox.Show("The Image was sent to the server");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
                 }
             });
-
+        }
+        public byte[] GetBytesOfImage(string path)
+        {
+            var image = new Bitmap(path);
+            ImageConverter imageconverter = new ImageConverter();
+            var imagebytes = ((byte[])imageconverter.ConvertTo(image, typeof(byte[])));
+            return imagebytes;
         }
     }
 }
