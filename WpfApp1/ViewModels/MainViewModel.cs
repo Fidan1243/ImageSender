@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -35,7 +36,7 @@ namespace WpfApp1.ViewModels
 
         public void Reciever()
         {
-            var ipAddress = IPAddress.Parse("10.1.18.52");
+            var ipAddress = IPAddress.Parse("192.168.6.107");
             var port = 27002;
             using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
             {
@@ -55,12 +56,13 @@ namespace WpfApp1.ViewModels
 
                         MessageBox.Show($"{client.RemoteEndPoint}  connected  . . . ");
                         var length = 0;
-                        var bytes = new byte[1024];
+                        var bytes = new byte[1000000];
                         
                         do
                         {
                             i++;
                             length = client.Receive(bytes);
+                            
                             var msg = GetImagePath(bytes, i);
                             Users.Add(new PhotoUser
                             {
@@ -84,11 +86,10 @@ namespace WpfApp1.ViewModels
         }
         public string GetImagePath(byte[] buffer, int counter)
         {
-            ImageConverter ic = new ImageConverter();
-            Image img = (Image)ic.ConvertFrom(buffer);
-            Bitmap bitmap1 = new Bitmap(img);
-            bitmap1.Save($@"C:\Users\Iman_vn85\source\repos\WpfApp3\WpfApp1\bin\Debug\Images\image{counter}.png");
-            var imagepath = $@"C:\Users\Iman_vn85\source\repos\WpfApp3\WpfApp1\bin\Debug\Images\image{counter}.png";
+            var imageMemorySt = new MemoryStream(buffer);
+            Image ifs = Image.FromStream(imageMemorySt);
+            ifs.Save($@"C:\Users\User\Documents\Sound recordings\image{counter}.png");
+            var imagepath = $@"C:\Users\User\Documents\Sound recordings\image{counter}.png";
             return imagepath;
         }
     }
