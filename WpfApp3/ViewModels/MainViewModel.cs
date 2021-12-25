@@ -1,4 +1,4 @@
-﻿using Microsoft.Win32;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -18,16 +18,17 @@ namespace WpfApp3.ViewModels
         public RelayCommand SendCommand { get; set; }
         public bool SendClickChecker { get; set; } = false;
         public string ImagePath { get; set; } = "";
-       
-    public MainViewModel()
+
+        public MainViewModel()
         {
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            var ipAddress = IPAddress.Parse("10.1.18.52");
+            var ipAddress = IPAddress.Parse("192.168.6.107");
             var port = 27002;
             var ep = new IPEndPoint(ipAddress, port);
             try
             {
                 socket.Connect(ep);
+                MessageBox.Show("Connected to the server . . .");
             }
             catch (Exception ex)
             {
@@ -44,14 +45,14 @@ namespace WpfApp3.ViewModels
             });
             SendCommand = new RelayCommand((e) =>
             {
-                    MessageBox.Show("Connected to the server . . .");
 
-                    if (socket.Connected)
-                    {
-                        socket.Send(GetBytesOfImage(ImagePath));
-                        MessageBox.Show("The Image was sent to the server");
-                    }
-                
+                if (socket.Connected)
+                {
+                    socket.Send(GetBytesOfImage(ImagePath));
+                    MessageBox.Show("The Image was sent to the server");
+                    
+                }
+
             });
         }
         public byte[] GetBytesOfImage(string path)
